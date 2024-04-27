@@ -34,6 +34,7 @@ app.get("/db" , async (req,res)=>{
 })
 
 app.use('/user' ,userRouter)
+app.get('/SFGF' ,userRouter)
 
 
 
