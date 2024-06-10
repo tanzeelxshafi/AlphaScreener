@@ -7,6 +7,8 @@ import { asyncHandler } from "../utils/CatchError.js";
 router.post('/authreview' , async (req, res) => {
     try{
         //first i will watch for body changes
+        
+        
         console.log(req.body);
         const {data,user} = req.body;
         if(!data||!user){
