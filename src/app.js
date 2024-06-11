@@ -2,7 +2,7 @@ import express, { json } from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { User } from "./models/user.js";
-
+//import { primeUser } from "./models/primeUser.js";
 const app = express();
 
 app.use(cors({
@@ -18,6 +18,7 @@ app.use(cookieParser());
 //routes import
 import userRouter from "./routes/users.js";
 import reviewRouter from "./routes/reviews.js";
+import primeUserRouter from "./routes/primeUser.js";
 //routes declaration
 
 app.get('/', async (req, res) => {
@@ -60,6 +61,8 @@ app.get("/check", (req, res) => {
 
 app.use('/users', userRouter)
 app.use('/reviews',reviewRouter)
+app.use('/primeUser', primeUserRouter);
+
 app.get('/SFGF', userRouter)
 
 

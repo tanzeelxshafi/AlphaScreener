@@ -9,8 +9,8 @@ dotenv.config({
 })
 
 
-connectDB()
+connectDB();
 
 app.listen( process.env.PORT, ()=>{
     console.log(`Server open at:${process.env.PORT}`)
-})
+});
