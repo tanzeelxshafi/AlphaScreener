@@ -7,12 +7,20 @@ import { ExpressError } from "../utils/ExpressError.js";
 router.post('/signup',async (req,res)=>{
    try{ 
     const user = new User({
-        username:req.body.username,
-        email:req.body.email,
-        password:req.body.password
-    });
-    console.log(req.body);
-    await user.save();
+          // id:req.body.id,
+          name:req.body.name,
+          email:req.body.email,
+          password:req.body.password,
+          phoneNumber:req.body.phoneNumber,
+          gender:req.body.gender,
+          isPrime:req.body.isPrime,
+      })
+      // console.log(PrimeUser.unique_Id);
+      if(user.isPrime==""||user.isPrime=="null"){
+        user.isPrime=false;
+      }
+      await user.save();
+      console.log(user);
     res.status(200).send('Success')}
     catch(e){
         console.log(e);
@@ -22,18 +30,23 @@ router.post('/signup',async (req,res)=>{
 
 router.post('/login', asyncHandler( async(req,res)=>{
 
-       const {username,password}=req.body;
-       if(!username||!password){
+       const {email,password}=req.body;
+       if(!email||!password){
         console.log('Enter all values');
         // throw new Error('Please enter');
         // console.log(Error.);  
         throw new ExpressError( 404 ,'Please enter values')
         // return res.send('Enter all values');
        }
-       const user=await User.findOne({username:username})
-       if(!user||user.password!==password){
+       const user=await User.findOne({email:email})
+       if(!user){
         return res.send('Fail')
        }
+      const isMatch=await User.comparePassword(password)
+      console.log(User); // Debugging: log the user instance
+      if (!isMatch) {
+        return res.status(400).send('Fail');
+      }
        res.send('User Exist') ;     
 }))
 

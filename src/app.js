@@ -1,8 +1,8 @@
 import express, { json } from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import { User } from "./models/user.js";
-//import { primeUser } from "./models/primeUser.js";
+// import { User } from "./models/user.js";
+// import primeUserRouter  from "./route/primeUser.js";
 const app = express();
 
 app.use(cors({
@@ -18,14 +18,15 @@ app.use(cookieParser());
 //routes import
 import userRouter from "./routes/users.js";
 import reviewRouter from "./routes/reviews.js";
-import primeUserRouter from "./routes/primeUser.js";
+import watchListRouter from "./routes/watchList.js";
+// import primeUserRouter from "./routes/primeUser.js";
 //routes declaration
 
 app.get('/', async (req, res) => {
     try {
         // Record the current time before making the API call
         const startTime = performance.now();
-        const result = await fetch("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2023-01-09/2023-01-09?apiKey=*");
+        const result = await fetch("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/week/2023-01-09/2023-02-10?adjusted=true&sort=asc&apiKey=8Ksn44pycRJyFLxnm4fE6AAGqDXpwudK");
         const data = await result.json();
         // Record the current time when the response is received
         const endTime = performance.now();
@@ -41,8 +42,7 @@ app.get('/', async (req, res) => {
             }
         })
     }
-    // const data="Hi Homepage";
-    // res.send(data);
+    
 })
 // app.get("/db", async (req, res) => {
 //     const newU = new User({
@@ -54,14 +54,15 @@ app.get('/', async (req, res) => {
 // })
 
 
-app.get("/check", (req, res) => {
-    const data = "check data";
-    res.send(JSON.stringify(data));
-})
+// app.get("/check", (req, res) => {
+//     const data = "check data";
+//     res.send(JSON.stringify(data));
+// })
 
 app.use('/users', userRouter)
 app.use('/reviews',reviewRouter)
-app.use('/primeUser', primeUserRouter);
+app.use('/watchList',watchListRouter)
+// app.use('/primeUser', primeUserRouter);
 
 app.get('/SFGF', userRouter)
 

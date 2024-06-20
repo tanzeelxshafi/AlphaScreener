@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 import { app } from "./app.js"
-import { connect } from "mongoose"
+// import { connect } from "mongoose"
 import connectDB from "./db/db.js"
 // import { f } from "./constants.js"
 
