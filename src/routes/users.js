@@ -1,53 +1,102 @@
+// import dotenv from "dotenv"
+
 import { Router } from "express";
 const router = Router();
-import {User} from '../models/user.js';
+import { User } from '../models/user.js';
 import { asyncHandler } from "../utils/CatchError.js";
 import { ExpressError } from "../utils/ExpressError.js";
+import { Otp } from "../models/otp.js";
+import  twilio  from "twilio";
+// import { twilio } from "pkg";
 
-router.post('/signup',async (req,res)=>{
-   try{ 
+
+const accountID = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = new twilio(accountID, authToken);
+router.post('/signup', async (req, res) => {
+  try {
     const user = new User({
-          // id:req.body.id,
-          name:req.body.name,
-          email:req.body.email,
-          password:req.body.password,
-          phoneNumber:req.body.phoneNumber,
-          gender:req.body.gender,
-          isPrime:req.body.isPrime,
-      })
-      // console.log(PrimeUser.unique_Id);
-      if(user.isPrime==""||user.isPrime=="null"){
-        user.isPrime=false;
-      }
-      await user.save();
-      console.log(user);
-    res.status(200).send('Success')}
-    catch(e){
-        console.log(e);
-        res.send('fail');
+      // id:req.body.id,
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      phoneNumber: req.body.phoneNumber,
+      gender: req.body.gender,
+      isPrime: req.body.isPrime,
+    })
+    // console.log(PrimeUser.unique_Id);
+    if (user.isPrime == "" || user.isPrime == "null") {
+      user.isPrime = false;
     }
+    const userSaved = await user.save();
+    if (!userSaved) {
+      return res.status(401).send('Something went wrong')
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate 6-digit OTP
+    const otpEntry = new Otp({ 
+      phoneNumber: userSaved.phoneNumber,
+      otp: otp,
+    });
+    await otpEntry.save();
+    console.log('otp entry saved');
+    // Send OTP via Twilio
+    await client.messages.create({
+      body: `Your OTP is: ${otp}`,
+      from: process.env.TWILIO_PHONE_NUMBER, // write to twilio
+      to: userSaved.phoneNumber
+    });
+    res.status(200).send('OTP sent successfully');
+    console.log(user);
+  }
+  catch (e) {
+    console.log(e);
+    res.send('fail');
+  }
 })
 
-router.post('/login', asyncHandler( async(req,res)=>{
+router.post('/otpVerify', asyncHandler(async (req, res) => {
+  const { otp, phoneNumber } = req.body;
+  const otpEntry = await Otp.findOne({ phoneNumber: phoneNumber });
+  if (!otpEntry) {
+    console.log("!otpEntry")
+    return res.status(400).send('Invalid OTP');
+  }
+  if (otp!= otpEntry.otp) {
+    console.log(otpEntry.otp)
+    console.log(otp)
+    return res.status(400).send('Invalid OTP');
+  }
+  await Otp.deleteOne({ phoneNumber: phoneNumber });
+  const user = await User.findOne({phoneNumber: phoneNumber});
+  if (!user) {
+    return res.status(400).send('Invalid OTP');
+  }
+  user.isPrime = true;
+  await user.save();
+  res.status(200).send('Valid OTP');
+}))
 
-       const {email,password}=req.body;
-       if(!email||!password){
-        console.log('Enter all values');
-        // throw new Error('Please enter');
-        // console.log(Error.);  
-        throw new ExpressError( 404 ,'Please enter values')
-        // return res.send('Enter all values');
-       }
-       const user=await User.findOne({email:email})
-       if(!user){
-        return res.send('Fail')
-       }
-      const isMatch=await User.comparePassword(password)
-      console.log(User); // Debugging: log the user instance
-      if (!isMatch) {
-        return res.status(400).send('Fail');
-      }
-       res.send('User Exist') ;     
+router.post('/login', asyncHandler(async (req, res) => {
+
+  const { email, password } = req.body;
+  if (!email || !password) {
+    console.log('Enter all values');
+    // throw new Error('Please enter');
+    // console.log(Error.);  
+    throw new ExpressError(404, 'Please enter values')
+    // return res.send('Enter all values');
+  }
+  const user = await User.findOne({ email: email })
+  if (!user) {
+    return res.send('Fail')
+  }
+  const isMatch = await user.comparePassword(password)
+  console.log(User); // Debugging: log the user instance
+  if (!isMatch) {
+    return res.status(400).send('Fail');
+  }
+  res.send('User Exist');
 }))
 
 export default router;

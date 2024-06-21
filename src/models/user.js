@@ -24,9 +24,10 @@ const userSchema = new Schema({
             required:[true]
         },
         phoneNumber:{
-            type:Number,
+            type:String,
             required:[false],
-            unique:[true]
+            unique:[true],
+            foreignKey:[true]
         },
         Gender:{
             type:String,
@@ -58,6 +59,8 @@ userSchema.pre('save', async function(next){
 
 // Method to compare input password with the hashed password
 userSchema.methods.comparePassword = async function(candidatePassword) {
+    console.log(candidatePassword);
+    console.log(this.password);
     return await bcrypt.compare(candidatePassword, this.password)
   };
 
