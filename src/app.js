@@ -26,7 +26,7 @@ app.get('/', async (req, res) => {
     try {
         // Record the current time before making the API call
         const startTime = performance.now();
-        const result = await fetch("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/week/2023-01-09/2023-02-10?adjusted=true&sort=asc&apiKey=8Ksn44pycRJyFLxnm4fE6AAGqDXpwudK");
+        const result = await fetch("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2024-06-25/2024-06-26?adjusted=true&sort=asc&apiKey=8Ksn44pycRJyFLxnm4fE6AAGqDXpwudK");
         const data = await result.json();
         // Record the current time when the response is received
         const endTime = performance.now();

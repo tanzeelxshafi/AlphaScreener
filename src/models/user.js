@@ -29,9 +29,13 @@ const userSchema = new Schema({
         unique: [true],
         foreignKey: [true]
     },
-    Gender: {
+    gender: {
         type: String,
         required: [false]
+    },
+    verified:{
+        type: Boolean,
+        default: false
     },
     isPrime: {
         type: Boolean,
@@ -71,12 +75,12 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 
-userSchema.method.generateAccessToken = function () {
+userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
         {
             _id: this._id,
-            email: this.email,
-            name: this.name,
+            email: this.email
+            // name: this.name,
             // phoneNumber : this.phoneNumber
 
         },
@@ -87,13 +91,13 @@ userSchema.method.generateAccessToken = function () {
     )
 }
 
-userSchema.method.generateRefreshToken = function () {
+userSchema.methods.generateRefreshToken = function () {
     return jwt.sign(
         {
             _id: this._id,
 
         },
-        process.env.ACCESS_REFRESH_SECRET,
+        process.env.REFRESH_TOKEN_SECRET,
         {
             expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }
