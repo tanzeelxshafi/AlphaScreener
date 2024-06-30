@@ -7,8 +7,8 @@ const userSchema = new Schema({
     unique_Id: {
         type: Schema.Types.ObjectId,
         required: false,//allowNull:false
-        primaryKey: [true],
-        foreignKey: [true]
+        primaryKey: true,
+        foreignKey: true
     },
     name: {
         type: String,

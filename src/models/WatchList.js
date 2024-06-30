@@ -16,10 +16,10 @@ const StockWatchList = new Schema({
   //   ref: "User",  // Reference the User model
   //   required: [true, 'User reference is required']
   // },
-  compData: {
-    type: String,
-    required: [false],
-  }
+  // compData: {
+  //   type: String,
+  //   required: [false],
+  // }
 });
 
 StockWatchList.pre('save', async function (next) {
