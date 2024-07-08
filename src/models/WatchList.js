@@ -7,15 +7,15 @@ const StockWatchList = new Schema({
     autoIncrement: true,  // Reference the User model
     unique: true,
   },
-  compName: {
-    type: Schema.Types.Mixed,
-    required: [true]
+  compName: [{
+    type: Schema.Types.ObjectId,
+    ref:"companyData",
+   }],
+  userId: {
+    type: Schema.Types.ObjectId,  // Use ObjectId to reference the User model
+    ref: "User",  // Reference the User model
+    required: [true, 'User reference is required']
   },
-  // userId: {
-  //   type: Schema.Types.ObjectId,  // Use ObjectId to reference the User model
-  //   ref: "User",  // Reference the User model
-  //   required: [true, 'User reference is required']
-  // },
   // compData: {
   //   type: String,
   //   required: [false],

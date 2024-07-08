@@ -4,12 +4,12 @@ import bcrypt from "bcryptjs";
 
 
 const userSchema = new Schema({
-    unique_Id: {
-        type: Schema.Types.ObjectId,
-        required: false,//allowNull:false
-        primaryKey: true,
-        foreignKey: true
-    },
+    // unique_Id: {
+    //     type: Schema.Types.ObjectId,
+    //     required: false,//allowNull:false
+    //     primaryKey: true,
+    //     foreignKey: true
+    // },
     name: {
         type: String,
         required: [true]

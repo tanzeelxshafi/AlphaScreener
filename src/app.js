@@ -29,7 +29,7 @@ app.get('/', async (req, res) => {
         const result = await fetch("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2024-06-25/2024-06-26?adjusted=true&sort=asc&apiKey=8Ksn44pycRJyFLxnm4fE6AAGqDXpwudK");
         const data = await result.json();
         // Record the current time when the response is received
-        const endTime = performance.now();
+        const endTime = performance.n+ow();
         const timetaken = endTime - startTime;
         // const user  = await User.find();
         console.log(`Time taken to fetch data: ${timetaken}ms`);
