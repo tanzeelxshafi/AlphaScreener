@@ -1,7 +1,9 @@
 import { Router } from "express";
 const router = Router();
-import {compStock} from "../models/companyData.js";
+import compStock from "../models/companyData.js";
 import { watchList } from "../models/WatchList.js";
+import { app } from "../app.js";
+import { asyncHandler } from "../utils/CatchError.js";
 
 router.get("/list", async (req, res) => {
     try {
@@ -12,7 +14,7 @@ router.get("/list", async (req, res) => {
         //     results: data.results
         // })
         // await newData.save();
-        console.log(data);
+        console.log(data[0]);
         res.status(200).send(data);
     } catch (err) {
         console.log(err);
@@ -34,4 +36,11 @@ router.get('/watchList', async (req, res) => {
     req.status(200).send(data);
 })
 
+router.get('/' ,  async(req, res) => {
+    try{
+        // console.log('hit')
+        const data = await compStock.find({});
+        console.log(data);
+    res.status(200).send(data);}catch(err){ res.status(500).send(err)}
+});
 export default router;
